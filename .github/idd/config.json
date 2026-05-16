@@ -1,0 +1,26 @@
+{
+  "$schema": "https://kurone-kito.github.io/idd-skill/schemas/policy.schema.json",
+  "iddVersion": "0.1.0",
+  "markerPrefix": "vrc-event-calendar",
+  "mergePolicy": "fully_autonomous_merge",
+  "reviewPolicy": "copilot-advisory",
+  "threadResolutionPolicy": "fast-agent-resolve",
+  "skipIssueAuthorApprovalGate": false,
+  "maintainerApprovalActorPolicy": "owners-and-maintainers-only",
+  "claimTiming": {
+    "staleAge": "PT24H",
+    "heartbeatInterval": "PT12H"
+  },
+  "trustedMarkerActors": ["kurone-kito"],
+  "commands": {
+    "install-deps": "true",
+    "fix-validate": "true",
+    "pre-push-validate": "true",
+    "post-fix-validate": "true"
+  },
+  "helperRuntime": {
+    "profile": "instructions-only"
+  },
+  "issueScope": "roadmap",
+  "orphanFirstPolicy": "none"
+}
