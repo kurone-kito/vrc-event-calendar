@@ -1,18 +1,18 @@
 const highlights = [
   {
-    title: "Shared issue flow",
+    title: 'Shared issue flow',
     description:
-      "Track planning, implementation, and review with the same IDD loop used in the workshop.",
+      'Track planning, implementation, and review with the same IDD loop used in the workshop.',
   },
   {
-    title: "Type-safe foundation",
+    title: 'Type-safe foundation',
     description:
-      "Next.js 15, TypeScript, and Tailwind CSS provide the baseline for future calendar features.",
+      'Next.js 15, TypeScript, and Tailwind CSS provide the baseline for future calendar features.',
   },
   {
-    title: "Ready for containers",
+    title: 'Ready for containers',
     description:
-      "The app boots with the standard Node workflow so the next Docker step can wrap it without code churn.",
+      'The app boots with the standard Node workflow so the next Docker step can wrap it without code churn.',
   },
 ];
 
@@ -79,7 +79,7 @@ export default function Home() {
             </p>
             <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
               <li>
-                App Router enabled under{" "}
+                App Router enabled under{' '}
                 <code className="font-mono text-xs">src/app</code>
               </li>
               <li>Tailwind utilities active in the UI</li>
