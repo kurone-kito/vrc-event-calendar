@@ -1,0 +1,16 @@
+.git
+.next
+node_modules
+out
+coverage
+package-lock.json
+src/app/favicon.ico
+.github
+docs
+profiles
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+LICENSE
+README.md
+SECURITY.md
