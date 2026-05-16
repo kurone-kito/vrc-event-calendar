@@ -17,6 +17,7 @@ ignorePaths:
   - .*ignore
   - .git
   - .github/CODE_OF_CONDUCT.*
+  - package-lock.json
   - .vscode/extensions.json
 language: en,ja
 useGitignore: true
