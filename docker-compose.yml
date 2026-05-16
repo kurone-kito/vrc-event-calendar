@@ -17,7 +17,7 @@ services:
       retries: 12
       start_period: 5s
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_BIND_HOST:-127.0.0.1}:${DB_PORT:-5432}:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
@@ -29,7 +29,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@db:5432/vrc_event_calendar?schema=public}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@${POSTGRES_HOST:-db}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-vrc_event_calendar}?schema=${POSTGRES_SCHEMA:-public}}
       NEXT_TELEMETRY_DISABLED: "1"
     healthcheck:
       test:
