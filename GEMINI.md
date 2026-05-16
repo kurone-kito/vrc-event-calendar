@@ -1,9 +1,9 @@
 # Guidelines for AI Agents
 
-This project is a language-independent generic project template.
-It is currently optimized for GitHub Copilot tooling, but `GEMINI.md`
-exists so Gemini CLI can still receive the minimum project rules
-immediately, without depending on a redirect.
+This repository hosts the `vrc-event-calendar` workshop example
+application. It imports the IDD workflow from
+`kurone-kito/idd-skill` and keeps `GEMINI.md` as a direct Gemini CLI
+entry point.
 
 ## Immediate rules
 
@@ -42,21 +42,21 @@ disabled). Feature branches are always rebased onto `main`, never
 merged. See the full rules in
 [.github/copilot-instructions.md](.github/copilot-instructions.md#branch-strategy).
 
-## Onboarding detection
+## IDD Workflow
 
-When starting a session, check whether this repository is the base
-template or a derived project:
+This project uses Issue-Driven Development (IDD) with parallel AI
+agents. Start with [docs/idd-workflow.md](docs/idd-workflow.md) for the
+cross-agent entry path and phase routing.
 
-- If the repository name is exactly `template`, it is the base
-  template — no action needed.
-- If the name differs **and** this file still contains the phrase
-  `language-independent generic project template`, the guidelines
-  have not been customized yet.
+Before starting IDD work, open
+`.github/instructions/idd-overview.instructions.md`. Open the routed
+phase file manually when the current step changes.
 
-In that case, **proactively propose an onboarding workflow** to
-customize the project's documentation, tooling, and AI guidelines.
-See the full onboarding checklist in
-[.github/copilot-instructions.md](.github/copilot-instructions.md).
+## IDD Policy
+
+Repository-local IDD choices are recorded in
+[docs/idd-policy.md](docs/idd-policy.md). Read that file before
+assuming helper runtime, claim timing, approval, or merge behavior.
 
 ## Canonical reference
 

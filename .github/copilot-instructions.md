@@ -1,6 +1,8 @@
 # Guidelines for AI Agents
 
-This project is a language-independent generic project template.
+This repository hosts the `vrc-event-calendar` workshop example
+application and imports the IDD workflow from
+`kurone-kito/idd-skill`.
 
 When contributing to this repository using AI agents, adhere to the
 following guidelines to ensure high-quality contributions that align with
@@ -16,6 +18,28 @@ day-to-day work and benchmarking.
 compatibility entry points for Codex, Claude Code, and Gemini CLI
 respectively. Keep this file as the canonical, fully detailed guide
 unless benchmark results justify a more neutral layout.
+
+## Repository context
+
+This repository is the workshop example app, not the base template that
+generated it. Prefer repository-local decisions over generic template
+assumptions when they differ.
+
+## IDD Workflow
+
+This project uses Issue-Driven Development (IDD) with parallel AI
+agents. Start with [docs/idd-workflow.md](../docs/idd-workflow.md) for
+the cross-agent entry path and phase routing.
+
+Before starting IDD work, open
+`.github/instructions/idd-overview.instructions.md`. Open the routed
+phase file manually when the current step changes.
+
+## IDD Policy
+
+Repository-local IDD choices are recorded in
+[docs/idd-policy.md](../docs/idd-policy.md). Read that file before
+assuming helper runtime, claim timing, approval, or merge behavior.
 
 ## Conversation
 
