@@ -1,0 +1,12 @@
+services:
+  app:
+    command: >
+      sh -c "npm ci && npm run dev -- --hostname 0.0.0.0"
+    volumes:
+      - .:/app
+      - app-node-modules:/app/node_modules
+      - app-next-cache:/app/.next
+
+volumes:
+  app-node-modules:
+  app-next-cache:
