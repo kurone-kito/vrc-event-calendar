@@ -1,7 +1,7 @@
 services:
   app:
-    command: >
-      sh -c "npm ci && npm run dev -- --hostname 0.0.0.0"
+    command: ["sh", "./scripts/docker-dev-start.sh"]
+    user: root
     volumes:
       - .:/app
       - app-node-modules:/app/node_modules
