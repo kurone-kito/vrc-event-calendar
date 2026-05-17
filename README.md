@@ -1,97 +1,74 @@
 # VRChat Event Calendar
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Linting](https://github.com/kurone-kito/vrc-event-calendar/actions/workflows/lint.yml/badge.svg)](https://github.com/kurone-kito/vrc-event-calendar/actions/workflows/lint.yml)
+[![CI](https://github.com/kurone-kito/vrc-event-calendar/actions/workflows/ci.yml/badge.svg)](https://github.com/kurone-kito/vrc-event-calendar/actions/workflows/ci.yml)
 [![Built with IDD](https://img.shields.io/badge/Built%20with-IDD-0a7ea4)](https://github.com/kurone-kito/idd-skill/blob/main/docs/workshop/README.md)
 [![CodeRabbit](https://img.shields.io/badge/review-CodeRabbit-green?logo=coderabbit)](https://www.coderabbit.ai/)
 
-A workshop companion repository for building a VRChat Event Calendar
-with Issue-Driven Development (IDD).
+A VRChat event listing web app built as a companion project for the
+[Build a VRChat Event Calendar with IDD workshop][workshop].
+
+[workshop]: https://github.com/kurone-kito/idd-skill/blob/main/docs/workshop/README.md
+
+## Prerequisites
+
+- **[Docker Desktop](https://www.docker.com/products/docker-desktop/)** — runs the PostgreSQL database
+- **[Node.js 22+](https://nodejs.org/)** — runs the Next.js dev server
+- **[gh CLI](https://cli.github.com/)** — for cloning and GitHub operations (optional for cloning)
 
 ## Quick Start
 
-1. Start the Docker services and development server:
+```sh
+gh repo clone kurone-kito/vrc-event-calendar
+cd vrc-event-calendar
+cp .env.example .env
+```
 
-   ```sh
-   npm run dev:docker
-   ```
+Open `.env` and replace `@db:` with `@127.0.0.1:` in the `DATABASE_URL`
+line so that host-side commands can reach the published PostgreSQL port:
 
-2. Run database migrations:
+```env
+DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/vrc_event_calendar?schema=public
+```
 
-   ```sh
-   npm run db:migrate
-   ```
+Then start the database, install dependencies, and run the app:
 
-3. Seed the database with sample events:
+```sh
+docker compose up -d
+npm install
+npm run db:migrate
+npm run db:seed
+npm run dev
+```
 
-   ```sh
-   npm run db:seed
-   ```
+Open <http://localhost:3000> — you should see a list of seeded VRChat events.
 
-### Available database scripts
+## Available scripts
 
-| Script | Command | Description |
-| --- | --- | --- |
-| `db:migrate` | `prisma migrate dev` | Apply pending migrations |
-| `db:seed` | `prisma db seed` | Insert sample events (idempotent) |
-| `db:studio` | `prisma studio` | Open Prisma Studio GUI |
-| `db:reset` | `prisma migrate reset --force` | Reset and re-apply all migrations |
+| Script | Description |
+| --- | --- |
+| `npm run dev` | Start the Next.js development server |
+| `npm run dev:docker` | Start Docker services and the dev server together |
+| `npm run build` | Build the production bundle |
+| `npm start` | Start the production server (requires `build` first) |
+| `npm run lint` | Run ESLint across the project |
+| `npm test` | Run Vitest unit tests |
+| `npm run test:watch` | Run Vitest in watch mode |
+| `npm run test:e2e` | Run Playwright end-to-end tests |
+| `npm run format` | Format all files with Prettier |
+| `npm run format:check` | Check formatting without writing files |
+| `npm run db:migrate` | Apply pending Prisma migrations |
+| `npm run db:seed` | Insert sample events (idempotent) |
+| `npm run db:studio` | Open Prisma Studio in the browser |
+| `npm run db:reset` | Reset and re-apply all migrations |
 
 ## Built with idd-skill
 
-This example repository is built alongside the
-[Build a VRChat Event Calendar with IDD workshop](https://github.com/kurone-kito/idd-skill/blob/main/docs/workshop/README.md)
-in `kurone-kito/idd-skill`. If you arrived here first, start with the
-workshop to see the claims, plans, pull requests, and merge loops behind
-the codebase.
-
-## Features
-
-- AI agent guidance with a Copilot-first compatibility layout
-  ([GitHub Copilot canonical guide](.github/copilot-instructions.md),
-  [OpenAI Codex adapter](AGENTS.md),
-  [Claude Code adapter](CLAUDE.md),
-  [Gemini CLI adapter](GEMINI.md),
-  [strategy notes](docs/ai-strategy.md))
-- CI/CD
-  - [CodeRabbit](https://www.coderabbit.ai/)
-  - [ImgBot](https://imgbot.net/)
-  - Linting on GitHub Actions
-  - Stale issues and pull requests management on GitHub Actions
-- [Conventional Commits](https://www.conventionalcommits.org/)
-- Documents for GitHub
-- Git attributes
-- Linters
-  - [CSpell](https://cspell.org/)
-  - [EditorConfig](https://editorconfig.org/)
-  - [MarkdownLint](https://github.com/DavidAnson/markdownlint)
-
-### Recommended NeoVim / Vim plugins
-
-- [editorconfig-vim](https://github.com/editorconfig/editorconfig-vim) —
-  EditorConfig support
-- [cspell.nvim](https://github.com/davidmh/cspell.nvim) — CSpell
-  integration for NeoVim (via null-ls / none-ls)
-
-## Using this template
-
-1. Click "Use this template" on GitHub to create your repository.
-2. Replace the LICENSE file if you prefer a different license.
-3. Review workflows under `.github/workflows` and adjust them to your needs.
-4. Customize the configuration files:
-   - `.editorconfig` sets editor rules.
-   - `.gitattributes` manages line ending normalization and export rules.
-   - `.imgbotconfig` controls image optimization.
-   - `.markdownlint.yml` and `.markdownlint-cli2.yaml` define Markdown
-     lint rules.
-   - `.cspell.config.yml` configures spell checking.
-   - `.coderabbit.yaml` contains CodeRabbit settings.
-   - `.vscode/` provides recommended settings for VS Code.
-5. Update documents in `.github/` such as CONTRIBUTING.md to match your
-   policies.
-6. Review `docs/ai-strategy.md`, then update `AGENTS.md`,
-   `CLAUDE.md`, `GEMINI.md`, and `.github/copilot-instructions.md` to
-   reflect your project specifics and preferred tooling order.
+This repository is the example app built during the
+[Build a VRChat Event Calendar with IDD workshop][workshop].
+The workshop walks through every issue, branch, pull request, and merge
+loop — start there if you want to see the development process behind the
+codebase.
 
 ## License
 
