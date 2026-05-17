@@ -278,7 +278,22 @@ describe('POST /api/events', () => {
     const data = await response.json();
 
     expect(response.status).toBe(400);
-    expect(data.error).toContain('title');
+    expect(data.errors.title).toBeDefined();
+    expect(createMock).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 with errors.startAt when startAt is not a valid datetime', async () => {
+    const response = await POST(
+      new Request('http://localhost:3000/api/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...validBody, startAt: 'not-a-date' }),
+      }),
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(data.errors.startAt).toBeDefined();
     expect(createMock).not.toHaveBeenCalled();
   });
 
@@ -348,7 +363,7 @@ describe('POST /api/events', () => {
     const data = await response.json();
 
     expect(response.status).toBe(400);
-    expect(data.error).toContain('startAt');
+    expect(data.errors.endAt).toBeDefined();
     expect(createMock).not.toHaveBeenCalled();
   });
 });

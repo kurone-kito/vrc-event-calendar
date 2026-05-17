@@ -2,6 +2,7 @@ import { EventCategory, Prisma } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
 import { db } from '@/lib/db';
+import { CreateEventSchema } from '@/lib/validators/event';
 
 function parseDate(value: string | null): Date | undefined {
   if (!value) {
@@ -68,80 +69,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  if (!body || typeof body !== 'object') {
+  const result = CreateEventSchema.safeParse(body);
+  if (!result.success) {
     return NextResponse.json(
-      { error: 'Request body must be an object' },
+      { errors: result.error.flatten().fieldErrors },
       { status: 400 },
     );
   }
 
   const { title, startAt, endAt, category, description, worldId, worldName } =
-    body as Record<string, unknown>;
-
-  if (!title || typeof title !== 'string') {
-    return NextResponse.json(
-      { error: 'Missing or invalid field: title' },
-      { status: 400 },
-    );
-  }
-  if (!startAt || typeof startAt !== 'string') {
-    return NextResponse.json(
-      { error: 'Missing or invalid field: startAt' },
-      { status: 400 },
-    );
-  }
-  if (!endAt || typeof endAt !== 'string') {
-    return NextResponse.json(
-      { error: 'Missing or invalid field: endAt' },
-      { status: 400 },
-    );
-  }
-  if (
-    !category ||
-    !Object.values(EventCategory).includes(category as EventCategory)
-  ) {
-    return NextResponse.json(
-      { error: 'Missing or invalid field: category' },
-      { status: 400 },
-    );
-  }
-
-  const startAtDate = new Date(startAt);
-  const endAtDate = new Date(endAt);
-
-  if (Number.isNaN(startAtDate.getTime())) {
-    return NextResponse.json(
-      { error: 'Invalid date: startAt' },
-      { status: 400 },
-    );
-  }
-  if (Number.isNaN(endAtDate.getTime())) {
-    return NextResponse.json(
-      { error: 'Invalid date: endAt' },
-      { status: 400 },
-    );
-  }
-  if (startAtDate >= endAtDate) {
-    return NextResponse.json(
-      { error: 'startAt must be before endAt' },
-      { status: 400 },
-    );
-  }
-
+    result.data;
   const creatorToken = crypto.randomUUID();
 
   const event = await db.event.create({
     data: {
       title,
-      startAt: startAtDate,
-      endAt: endAtDate,
+      startAt: new Date(startAt),
+      endAt: new Date(endAt),
       category: category as EventCategory,
       creatorToken,
-      ...(description && typeof description === 'string'
-        ? { description }
-        : {}),
-      ...(worldId && typeof worldId === 'string' ? { worldId } : {}),
-      ...(worldName && typeof worldName === 'string' ? { worldName } : {}),
+      ...(description !== undefined ? { description } : {}),
+      ...(worldId !== undefined ? { worldId } : {}),
+      ...(worldName !== undefined ? { worldName } : {}),
     },
   });
 

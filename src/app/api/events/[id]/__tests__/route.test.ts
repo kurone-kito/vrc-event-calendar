@@ -138,6 +138,14 @@ describe("PUT /api/events/[id]", () => {
     expect(updateMock).toHaveBeenCalledOnce();
   });
 
+  it("returns 200 when body is empty (all fields optional)", async () => {
+    const { request, context } = makePutRequest("seed-party-001", "correct-token-abc", {});
+    const response = await PUT(request, context);
+
+    expect(response.status).toBe(200);
+    expect(updateMock).toHaveBeenCalledOnce();
+  });
+
   it("returns 403 when token does not match", async () => {
     const { request, context } = makePutRequest(
       "seed-party-001",
