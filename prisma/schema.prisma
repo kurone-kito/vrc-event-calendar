@@ -6,3 +6,26 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum EventCategory {
+  PARTY
+  MUSIC
+  ART
+  GAME
+  SOCIAL
+  OTHER
+}
+
+model Event {
+  id           String        @id @default(cuid())
+  title        String
+  description  String?
+  startAt      DateTime
+  endAt        DateTime
+  category     EventCategory
+  worldId      String?
+  worldName    String?
+  creatorToken String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
