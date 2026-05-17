@@ -11,7 +11,7 @@ const EventCategoryEnum = z.enum([
 
 export const CreateEventSchema = z
   .object({
-    title: z.string().min(1),
+    title: z.string().trim().min(1),
     startAt: z.string().datetime(),
     endAt: z.string().datetime(),
     category: EventCategoryEnum,
@@ -25,7 +25,7 @@ export const CreateEventSchema = z
   });
 
 export const UpdateEventSchema = z.object({
-  title: z.string().min(1).optional(),
+  title: z.string().trim().min(1).optional(),
   startAt: z.string().datetime().optional(),
   endAt: z.string().datetime().optional(),
   category: EventCategoryEnum.optional(),

@@ -44,6 +44,11 @@ describe("CreateEventSchema", () => {
     expect(result.success).toBe(false);
   });
 
+  it("rejects whitespace-only title", () => {
+    const result = CreateEventSchema.safeParse({ ...validCreate, title: "   " });
+    expect(result.success).toBe(false);
+  });
+
   it("rejects missing startAt", () => {
     const { startAt: _s, ...rest } = validCreate;
     void _s;
