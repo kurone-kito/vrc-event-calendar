@@ -1,0 +1,75 @@
+# Defang deployment configuration for vrc-event-calendar.
+# See docs/workshop/bonus-defang-deployment.md for the deployment runbook.
+#
+# IMPORTANT: Docker Compose prefers this file over docker-compose.yml.
+# For local development, pass -f docker-compose.yml explicitly:
+#   docker compose -f docker-compose.yml up -d db
+#
+# Before deploying, authenticate and set secrets for project "vrc-cal":
+#   defang login
+#   defang config set DATABASE_URL --project-name vrc-cal
+#   defang config set POSTGRES_PASSWORD --project-name vrc-cal
+#
+# Then deploy:
+#   defang compose up
+
+name: vrc-cal
+
+services:
+  db:
+    image: postgres:16-alpine
+    deploy:
+      resources:
+        reservations:
+          memory: 256M
+    environment:
+      POSTGRES_DB: vrc_event_calendar
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD:
+    # cspell:ignore isready
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U postgres -d vrc_event_calendar
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 5s
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command:
+      - sh
+      - -c
+      - npx prisma migrate deploy && npm run build && npm start
+    deploy:
+      resources:
+        reservations:
+          memory: 512M
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL:
+      NEXT_TELEMETRY_DISABLED: "1"
+      NODE_ENV: production
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "const http=require('http');const req=http.get('http://127.0.0.1:3000',res=>process.exit(res.statusCode===200?0:1));req.on('error',()=>process.exit(1));"
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    ports:
+      - mode: ingress
+        target: 3000
+
+volumes:
+  postgres-data:
