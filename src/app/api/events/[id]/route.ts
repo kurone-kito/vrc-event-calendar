@@ -4,6 +4,7 @@ import { EventCategory } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
+import { UpdateEventSchema } from "@/lib/validators/event";
 
 function isValidId(id: string): boolean {
   return /^[a-zA-Z0-9_-]{1,100}$/.test(id);
@@ -64,37 +65,25 @@ export async function PUT(
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    body = {};
   }
 
-  const { title, description, startAt, endAt, category, worldId, worldName } =
-    (body ?? {}) as Record<string, unknown>;
-
-  const startAtDate = startAt ? new Date(startAt as string) : undefined;
-  const endAtDate = endAt ? new Date(endAt as string) : undefined;
-
-  if (startAtDate && Number.isNaN(startAtDate.getTime())) {
-    return NextResponse.json({ error: "Invalid date: startAt" }, { status: 400 });
-  }
-  if (endAtDate && Number.isNaN(endAtDate.getTime())) {
-    return NextResponse.json({ error: "Invalid date: endAt" }, { status: 400 });
-  }
-
-  const resolvedStart = startAtDate ?? event.startAt;
-  const resolvedEnd = endAtDate ?? event.endAt;
-  if (resolvedStart >= resolvedEnd) {
+  const result = UpdateEventSchema.safeParse(body ?? {});
+  if (!result.success) {
     return NextResponse.json(
-      { error: "startAt must be before endAt" },
+      { errors: result.error.flatten().fieldErrors },
       { status: 400 },
     );
   }
 
-  if (
-    category !== undefined &&
-    !Object.values(EventCategory).includes(category as EventCategory)
-  ) {
+  const { title, startAt, endAt, category, description, worldId, worldName } =
+    result.data;
+
+  const resolvedStart = startAt ? new Date(startAt) : event.startAt;
+  const resolvedEnd = endAt ? new Date(endAt) : event.endAt;
+  if (resolvedStart >= resolvedEnd) {
     return NextResponse.json(
-      { error: "Invalid field: category" },
+      { errors: { endAt: ["endAt must be after startAt"] } },
       { status: 400 },
     );
   }
@@ -102,13 +91,13 @@ export async function PUT(
   const updated = await db.event.update({
     where: { id },
     data: {
-      ...(title && typeof title === "string" ? { title } : {}),
-      ...(description !== undefined ? { description: description as string | null } : {}),
-      ...(startAtDate ? { startAt: startAtDate } : {}),
-      ...(endAtDate ? { endAt: endAtDate } : {}),
-      ...(category ? { category: category as EventCategory } : {}),
-      ...(worldId !== undefined ? { worldId: worldId as string | null } : {}),
-      ...(worldName !== undefined ? { worldName: worldName as string | null } : {}),
+      ...(title !== undefined ? { title } : {}),
+      ...(description !== undefined ? { description } : {}),
+      ...(startAt !== undefined ? { startAt: new Date(startAt) } : {}),
+      ...(endAt !== undefined ? { endAt: new Date(endAt) } : {}),
+      ...(category !== undefined ? { category: category as EventCategory } : {}),
+      ...(worldId !== undefined ? { worldId } : {}),
+      ...(worldName !== undefined ? { worldName } : {}),
     },
   });
 
