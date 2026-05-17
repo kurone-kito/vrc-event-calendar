@@ -8,6 +8,35 @@
 A workshop companion repository for building a VRChat Event Calendar
 with Issue-Driven Development (IDD).
 
+## Quick Start
+
+1. Start the Docker services and development server:
+
+   ```sh
+   npm run dev:docker
+   ```
+
+2. Run database migrations:
+
+   ```sh
+   npm run db:migrate
+   ```
+
+3. Seed the database with sample events:
+
+   ```sh
+   npm run db:seed
+   ```
+
+### Available database scripts
+
+| Script | Command | Description |
+| --- | --- | --- |
+| `db:migrate` | `prisma migrate dev` | Apply pending migrations |
+| `db:seed` | `prisma db seed` | Insert sample events (idempotent) |
+| `db:studio` | `prisma studio` | Open Prisma Studio GUI |
+| `db:reset` | `prisma migrate reset --force` | Reset and re-apply all migrations |
+
 ## Built with idd-skill
 
 This example repository is built alongside the
