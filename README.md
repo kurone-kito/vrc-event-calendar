@@ -38,7 +38,7 @@ DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/vrc_event_calendar?sc
 Then start the database, install dependencies, and run the app:
 
 ```sh
-docker compose up -d
+docker compose up -d db
 npm install
 npm run db:migrate
 npm run db:seed
