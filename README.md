@@ -12,9 +12,13 @@ A VRChat event listing web app built as a companion project for the
 
 ## Prerequisites
 
-- **[Docker Desktop](https://www.docker.com/products/docker-desktop/)** — runs the PostgreSQL database
-- **[Node.js 22+](https://nodejs.org/)** — runs the Next.js dev server
-- **[gh CLI](https://cli.github.com/)** — for cloning and GitHub operations (optional for cloning)
+- **[Docker Desktop][docker-desktop]** — runs the PostgreSQL database
+- **[Node.js 22+][nodejs]** — runs the Next.js dev server
+- **[gh CLI][gh-cli]** — for cloning and GitHub operations
+
+[docker-desktop]: https://www.docker.com/products/docker-desktop/
+[gh-cli]: https://cli.github.com/
+[nodejs]: https://nodejs.org/
 
 ## Quick Start
 
