@@ -12,6 +12,7 @@
 
 All quality gates pass on current `main` (commit `cadc41d`).
 Feature tracks C, D, E, F are complete:
+
 - C: API endpoints (#567–#570, Zod validation #613–#614)
 - D: Frontend (#572–#577)
 - E: Calendar (#578)
