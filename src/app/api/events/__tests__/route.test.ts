@@ -6,12 +6,13 @@ vi.mock('@/lib/db', () => ({
     event: {
       findMany: vi.fn(),
       count: vi.fn(),
+      create: vi.fn(),
     },
   },
 }));
 
 import { db } from '@/lib/db';
-import { GET } from '../route';
+import { GET, POST } from '../route';
 
 type MockEvent = {
   id: string;
@@ -222,5 +223,132 @@ describe('GET /api/events', () => {
     expect(response.status).toBe(200);
     expect(data.total).toBe(0);
     expect(data.events).toEqual([]);
+  });
+});
+
+describe('POST /api/events', () => {
+  const createMock = vi.mocked(db.event.create);
+
+  const validBody = {
+    title: 'Test Event',
+    startAt: '2026-07-01T20:00:00Z',
+    endAt: '2026-07-01T23:00:00Z',
+    category: 'PARTY',
+  };
+
+  beforeEach(() => {
+    createMock.mockReset();
+    createMock.mockImplementation(((args: { data: Record<string, unknown> }) =>
+      Promise.resolve({
+        id: 'test-id-001',
+        ...args.data,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })) as never);
+  });
+
+  it('returns 201 with created event and X-Creator-Token header', async () => {
+    const response = await POST(
+      new Request('http://localhost:3000/api/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(validBody),
+      }),
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(201);
+    expect(data.title).toBe('Test Event');
+    expect(response.headers.get('X-Creator-Token')).toBeTruthy();
+    expect(createMock).toHaveBeenCalledOnce();
+  });
+
+  it('returns 400 when title is missing', async () => {
+    const response = await POST(
+      new Request('http://localhost:3000/api/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          startAt: validBody.startAt,
+          endAt: validBody.endAt,
+          category: validBody.category,
+        }),
+      }),
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(data.error).toContain('title');
+    expect(createMock).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 when startAt is missing', async () => {
+    const response = await POST(
+      new Request('http://localhost:3000/api/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: validBody.title,
+          endAt: validBody.endAt,
+          category: validBody.category,
+        }),
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    expect(createMock).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 when endAt is missing', async () => {
+    const response = await POST(
+      new Request('http://localhost:3000/api/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: validBody.title,
+          startAt: validBody.startAt,
+          category: validBody.category,
+        }),
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    expect(createMock).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 when category is missing', async () => {
+    const response = await POST(
+      new Request('http://localhost:3000/api/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: validBody.title,
+          startAt: validBody.startAt,
+          endAt: validBody.endAt,
+        }),
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    expect(createMock).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 when startAt is after endAt', async () => {
+    const response = await POST(
+      new Request('http://localhost:3000/api/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...validBody,
+          startAt: '2026-07-01T23:00:00Z',
+          endAt: '2026-07-01T20:00:00Z',
+        }),
+      }),
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(data.error).toContain('startAt');
+    expect(createMock).not.toHaveBeenCalled();
   });
 });
