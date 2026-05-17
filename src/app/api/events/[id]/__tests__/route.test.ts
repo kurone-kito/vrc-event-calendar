@@ -6,12 +6,13 @@ vi.mock("@/lib/db", () => ({
     event: {
       findUnique: vi.fn(),
       update: vi.fn(),
+      delete: vi.fn(),
     },
   },
 }));
 
 import { db } from "@/lib/db";
-import { GET, PUT } from "../route";
+import { DELETE, GET, PUT } from "../route";
 
 type MockEvent = {
   id: string;
@@ -155,6 +156,65 @@ describe("PUT /api/events/[id]", () => {
 
     const { request, context } = makePutRequest("nonexistent", "any-token");
     const response = await PUT(request, context);
+    const data = await response.json();
+
+    expect(response.status).toBe(404);
+    expect(data.error).toBe("Event not found");
+  });
+});
+
+describe("DELETE /api/events/[id]", () => {
+  const findUniqueMock = vi.mocked(db.event.findUnique);
+  const deleteMock = vi.mocked(db.event.delete);
+
+  const storedEvent: MockEvent = {
+    ...sampleEvent,
+    creatorToken: "correct-token-xyz",
+  };
+
+  function makeDeleteRequest(id: string, token: string) {
+    return {
+      request: new Request(`http://localhost:3000/api/events/${id}`, {
+        method: "DELETE",
+        headers: { "X-Creator-Token": token },
+      }),
+      context: { params: Promise.resolve({ id }) },
+    };
+  }
+
+  beforeEach(() => {
+    findUniqueMock.mockReset();
+    deleteMock.mockReset();
+    findUniqueMock.mockResolvedValue(storedEvent as never);
+    deleteMock.mockResolvedValue(storedEvent as never);
+  });
+
+  it("returns 204 and deletes the event when token matches", async () => {
+    const { request, context } = makeDeleteRequest(
+      "seed-party-001",
+      "correct-token-xyz",
+    );
+    const response = await DELETE(request, context);
+
+    expect(response.status).toBe(204);
+    expect(deleteMock).toHaveBeenCalledWith({ where: { id: "seed-party-001" } });
+  });
+
+  it("returns 403 when token does not match", async () => {
+    const { request, context } = makeDeleteRequest("seed-party-001", "wrong");
+    const response = await DELETE(request, context);
+    const data = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(data.error).toBe("Forbidden");
+    expect(deleteMock).not.toHaveBeenCalled();
+  });
+
+  it("returns 404 when event does not exist", async () => {
+    findUniqueMock.mockResolvedValue(null);
+
+    const { request, context } = makeDeleteRequest("nonexistent", "any");
+    const response = await DELETE(request, context);
     const data = await response.json();
 
     expect(response.status).toBe(404);

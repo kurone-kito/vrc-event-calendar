@@ -114,3 +114,30 @@ export async function PUT(
 
   return NextResponse.json(updated);
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+
+  if (!isValidId(id)) {
+    return NextResponse.json({ error: "Invalid event ID format" }, { status: 400 });
+  }
+
+  const token = request.headers.get("X-Creator-Token") ?? "";
+
+  const event = await db.event.findUnique({ where: { id } });
+
+  if (!event) {
+    return NextResponse.json({ error: "Event not found" }, { status: 404 });
+  }
+
+  if (!tokensMatch(token, event.creatorToken)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  await db.event.delete({ where: { id } });
+
+  return new NextResponse(null, { status: 204 });
+}
