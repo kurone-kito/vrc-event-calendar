@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:docker": "docker compose up -d && npm run dev",
+    "dev:docker": "docker compose -f docker-compose.yml up -d && npm run dev",
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",

@@ -1,15 +1,19 @@
 # Defang deployment configuration for vrc-event-calendar.
 # See docs/workshop/bonus-defang-deployment.md for the deployment runbook.
 #
-# Before deploying, authenticate and set secrets:
+# IMPORTANT: Docker Compose prefers this file over docker-compose.yml.
+# For local development, pass -f docker-compose.yml explicitly:
+#   docker compose -f docker-compose.yml up -d db
+#
+# Before deploying, authenticate and set secrets for project "vrc-cal":
 #   defang login
-#   defang config set DATABASE_URL
-#   defang config set POSTGRES_PASSWORD
+#   defang config set DATABASE_URL --project-name vrc-cal
+#   defang config set POSTGRES_PASSWORD --project-name vrc-cal
 #
-# Then deploy (use a project name ≤16 chars to avoid resource name issues):
-#   defang compose up --project-name vrc-cal
-#
-# For local development use docker-compose.yml instead.
+# Then deploy:
+#   defang compose up
+
+name: vrc-cal
 
 services:
   db:
