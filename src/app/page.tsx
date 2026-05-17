@@ -1,7 +1,4 @@
-import { Suspense } from "react";
-
-import { EventCard } from "@/components/EventCard";
-import { FilterPanel } from "@/components/FilterPanel";
+import { EventsView } from "@/components/EventsView";
 
 type EventsResponse = {
   events: {
@@ -53,22 +50,7 @@ export default async function Home({
           VRChat Events
         </h1>
         <p className="mb-4 text-sm text-slate-500">{total} events</p>
-
-        <Suspense>
-          <FilterPanel />
-        </Suspense>
-
-        {events.length === 0 ? (
-          <p className="text-slate-500">
-            No events found.
-          </p>
-        ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {events.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
-        )}
+        <EventsView events={events} />
       </div>
     </main>
   );
