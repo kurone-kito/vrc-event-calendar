@@ -1,11 +1,20 @@
-# 📄 Generic repository template
+# VRChat Event Calendar
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Linting](https://github.com/kurone-kito/template/actions/workflows/lint.yml/badge.svg)](https://github.com/kurone-kito/template/actions/workflows/lint.yml)
+[![Linting](https://github.com/kurone-kito/vrc-event-calendar/actions/workflows/lint.yml/badge.svg)](https://github.com/kurone-kito/vrc-event-calendar/actions/workflows/lint.yml)
+[![Built with IDD](https://img.shields.io/badge/Built%20with-IDD-0a7ea4)](https://github.com/kurone-kito/idd-skill/blob/main/docs/workshop/README.md)
 [![CodeRabbit](https://img.shields.io/badge/review-CodeRabbit-green?logo=coderabbit)](https://www.coderabbit.ai/)
 
-A language-agnostic project template designed as the root of a hierarchy
-of derived templates.
+A workshop companion repository for building a VRChat Event Calendar
+with Issue-Driven Development (IDD).
+
+## Built with idd-skill
+
+This example repository is built alongside the
+[Build a VRChat Event Calendar with IDD workshop](https://github.com/kurone-kito/idd-skill/blob/main/docs/workshop/README.md)
+in `kurone-kito/idd-skill`. If you arrived here first, start with the
+workshop to see the claims, plans, pull requests, and merge loops behind
+the codebase.
 
 ## Features
 
