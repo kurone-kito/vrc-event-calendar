@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { DeleteButton } from "@/components/DeleteButton";
+
 type Event = {
   id: string;
   title: string;
@@ -97,6 +99,16 @@ export default async function EventDetailPage({
               </div>
             )}
           </dl>
+
+          <div className="mt-6 flex gap-3">
+            <Link
+              href={`/events/${event.id}/edit`}
+              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+              Edit
+            </Link>
+            <DeleteButton eventId={event.id} />
+          </div>
         </article>
       </div>
     </main>
