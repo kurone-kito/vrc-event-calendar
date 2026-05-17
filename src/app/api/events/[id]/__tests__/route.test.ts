@@ -5,13 +5,14 @@ vi.mock("@/lib/db", () => ({
   db: {
     event: {
       findUnique: vi.fn(),
+      update: vi.fn(),
       delete: vi.fn(),
     },
   },
 }));
 
 import { db } from "@/lib/db";
-import { DELETE, GET } from "../route";
+import { DELETE, GET, PUT } from "../route";
 
 type MockEvent = {
   id: string;
@@ -89,6 +90,76 @@ describe("GET /api/events/[id]", () => {
     expect(response.status).toBe(400);
     expect(data.error).toBe("Invalid event ID format");
     expect(findUniqueMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("PUT /api/events/[id]", () => {
+  const findUniqueMock = vi.mocked(db.event.findUnique);
+  const updateMock = vi.mocked(db.event.update);
+
+  const storedEvent: MockEvent = {
+    ...sampleEvent,
+    creatorToken: "correct-token-abc",
+  };
+
+  function makePutRequest(id: string, token: string, body: unknown = {}) {
+    return {
+      request: new Request(`http://localhost:3000/api/events/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Creator-Token": token,
+        },
+        body: JSON.stringify(body),
+      }),
+      context: { params: Promise.resolve({ id }) },
+    };
+  }
+
+  beforeEach(() => {
+    findUniqueMock.mockReset();
+    updateMock.mockReset();
+    findUniqueMock.mockResolvedValue(storedEvent as never);
+    updateMock.mockImplementation((({ data }: { data: object }) =>
+      Promise.resolve({ ...storedEvent, ...data })) as never);
+  });
+
+  it("returns 200 with updated event when token matches", async () => {
+    const { request, context } = makePutRequest(
+      "seed-party-001",
+      "correct-token-abc",
+      { title: "Updated Title" },
+    );
+    const response = await PUT(request, context);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.title).toBe("Updated Title");
+    expect(updateMock).toHaveBeenCalledOnce();
+  });
+
+  it("returns 403 when token does not match", async () => {
+    const { request, context } = makePutRequest(
+      "seed-party-001",
+      "wrong-token",
+    );
+    const response = await PUT(request, context);
+    const data = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(data.error).toBe("Forbidden");
+    expect(updateMock).not.toHaveBeenCalled();
+  });
+
+  it("returns 404 when event does not exist", async () => {
+    findUniqueMock.mockResolvedValue(null);
+
+    const { request, context } = makePutRequest("nonexistent", "any-token");
+    const response = await PUT(request, context);
+    const data = await response.json();
+
+    expect(response.status).toBe(404);
+    expect(data.error).toBe("Event not found");
   });
 });
 
