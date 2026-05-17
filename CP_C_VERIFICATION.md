@@ -10,7 +10,7 @@
 
 ## Closed sub-issues
 
-**Track C — API endpoints**
+### Track C — API endpoints
 
 - #567 GET /api/events/[id] ✅
 - #568 POST /api/events ✅
@@ -19,7 +19,7 @@
 - #613 Zod validation schemas ✅
 - #614 Zod validation in endpoints ✅
 
-**Track D — Frontend**
+### Track D — Frontend
 
 - #572 Event list page ✅
 - #573 Event detail page ✅
@@ -28,11 +28,11 @@
 - #576 Delete button ✅
 - #577 Filter panel ✅
 
-**Track E — Calendar**
+### Track E — Calendar
 
 - #578 Calendar view ✅
 
-**Track F — Quality hardening**
+### Track F — Quality hardening
 
 - #579 Playwright E2E smoke tests ✅
 - #580 Date utility unit tests ✅
